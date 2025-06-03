@@ -1,8 +1,8 @@
-import './global.css';
+import "./globals.css";
 
 const App = () => {
   return (
-    <div>
+    <div className="text-3xl font-bold underline">
       App
     </div>
   )
