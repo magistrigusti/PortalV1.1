@@ -17,7 +17,7 @@ export default function AuthLayout() {
           </section>
 
           <img
-            src="/assets/images/bg-portal.png"
+            src="/assets/images/bg-p.jpg"
             alt="logo"
             className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat"
           />
