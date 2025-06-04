@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -28,28 +29,25 @@ const SignupForm = () => {
     console.log(values);
   }
 
-  return (
-    <Form {...form} >
-      <form className="space-y-8"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <FormField 
+return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
           control={form.control}
           name="username"
-          render={({ field })} => (
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>UserName</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input placeholder="shadcn" {...field} />
               </FormControl>
-
               <FormDescription>
                 This is your public display name.
               </FormDescription>
+              <FormMessage />
             </FormItem>
-          )
+          )}
         />
-
         <Button type="submit">Submit</Button>
       </form>
     </Form>
