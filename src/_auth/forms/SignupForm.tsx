@@ -7,13 +7,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 // import Loader from "@/components/shared/Loader";
-// import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queries";
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { SignupValidation } from "@/lib/validation";
 import { createUserAccount} from "@/lib/appwrite/api";
 // import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
   const { toast } = useToast();
+  const isLoading = false;
   // const navigate = useNavigate();
   // const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
@@ -33,11 +34,20 @@ const SignupForm = () => {
     if (!newUser) {
       return toast({ title: "Sign up failed. Please try again"});
     }
+
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password
+    });
+
+    if (!session) {
+      return toast({ title: 'Sign in failed. Please try again'});
+    }
   }
 
   // Queries
-  // const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();
-  // const { mutateAsync: signInAccount, isLoading: isSigningInUser } = useSignInAccount();
+  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateUserAccount();
+  const { mutateAsync: signInAccount, isLoading: isSigningInUser } = useSignInAccount();
 
   // Handler
   // const handleSignup = async (user: z.infer<typeof SignupValidation>) => {
@@ -151,16 +161,14 @@ const SignupForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {/* {isCreatingAccount || isSigningInUser || isUserLoading ? (
-              
-            ) : (
-              "Sign Up"
-            )} */}
-
-            <div className="flex-center gap-2">
-                {/* <Loader /> Loading... */}
+             {isCreatingAccount || isSigningInUser || isUserLoading ? (
+              <div className="flex-center gap-2">
+                 <Loader /> Loading... 
                 "Sign Up"
               </div>
+            ) : (
+              "Sign Up"
+            )} 
           </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
