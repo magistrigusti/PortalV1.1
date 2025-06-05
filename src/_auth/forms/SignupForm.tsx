@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 // import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queries";
 import { SignupValidation } from "@/lib/validation";
-import { createUserAccount, signInAccount } from "@/lib/appwrite/api";
+import { createUserAccount} from "@/lib/appwrite/api";
 // import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
@@ -31,6 +31,8 @@ const SignupForm = () => {
 
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     const newUser = await createUserAccount(values);
+
+    console.log(newUser);
   }
 
   // Queries
