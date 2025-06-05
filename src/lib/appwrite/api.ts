@@ -59,15 +59,15 @@ export async function saveUserToDB(user: {
 }
 
 // ============================== SIGN IN
-export async function signInAccount(user: { email: string; password: string }) {
-  try {
-    const session = await account.createEmailSession(user.email, user.password);
+// export async function signInAccount(user: { email: string; password: string }) {
+//   try {
+//     const session = await account.createEmailSession(user.email, user.password);
 
-    return session;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return session;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // ============================== GET ACCOUNT
 export async function getAccount() {
@@ -126,11 +126,11 @@ export async function createPost(post: INewPost) {
     if (!uploadedFile) throw Error;
 
     // Get file url
-    const fileUrl = getFilePreview(uploadedFile.$id);
-    if (!fileUrl) {
-      await deleteFile(uploadedFile.$id);
-      throw Error;
-    }
+    // const fileUrl = getFilePreview(uploadedFile.$id);
+    // if (!fileUrl) {
+    //   await deleteFile(uploadedFile.$id);
+    //   throw Error;
+    // }
 
     // Convert tags into array
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
@@ -143,7 +143,7 @@ export async function createPost(post: INewPost) {
       {
         creator: post.userId,
         caption: post.caption,
-        imageUrl: fileUrl,
+        // imageUrl: fileUrl,
         imageId: uploadedFile.$id,
         location: post.location,
         tags: tags,
@@ -177,24 +177,24 @@ export async function uploadFile(file: File) {
 }
 
 // ============================== GET FILE URL
-export function getFilePreview(fileId: string) {
-  try {
-    const fileUrl = storage.getFilePreview(
-      appwriteConfig.storageId,
-      fileId,
-      2000,
-      2000,
-      "top",
-      100
-    );
+// export function getFilePreview(fileId: string) {
+//   try {
+//     const fileUrl = storage.getFilePreview(
+//       appwriteConfig.storageId,
+//       fileId,
+//       2000,
+//       2000,
+//       // "top",
+//       100
+//     );
 
-    if (!fileUrl) throw Error;
+//     if (!fileUrl) throw Error;
 
-    return fileUrl;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return fileUrl;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // ============================== DELETE FILE
 export async function deleteFile(fileId: string) {
@@ -266,68 +266,68 @@ export async function getPostById(postId?: string) {
 }
 
 // ============================== UPDATE POST
-export async function updatePost(post: IUpdatePost) {
-  const hasFileToUpdate = post.file.length > 0;
+// export async function updatePost(post: IUpdatePost) {
+//   const hasFileToUpdate = post.file.length > 0;
 
-  try {
-    let image = {
-      imageUrl: post.imageUrl,
-      imageId: post.imageId,
-    };
+//   try {
+//     let image = {
+//       imageUrl: post.imageUrl,
+//       imageId: post.imageId,
+//     };
 
-    if (hasFileToUpdate) {
-      // Upload new file to appwrite storage
-      const uploadedFile = await uploadFile(post.file[0]);
-      if (!uploadedFile) throw Error;
+//     if (hasFileToUpdate) {
+//       // Upload new file to appwrite storage
+//       const uploadedFile = await uploadFile(post.file[0]);
+//       if (!uploadedFile) throw Error;
 
-      // Get new file url
-      const fileUrl = getFilePreview(uploadedFile.$id);
-      if (!fileUrl) {
-        await deleteFile(uploadedFile.$id);
-        throw Error;
-      }
+//       // Get new file url
+//       const fileUrl = getFilePreview(uploadedFile.$id);
+//       if (!fileUrl) {
+//         await deleteFile(uploadedFile.$id);
+//         throw Error;
+//       }
 
-      image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
-    }
+//       image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
+//     }
 
-    // Convert tags into array
-    const tags = post.tags?.replace(/ /g, "").split(",") || [];
+//     // Convert tags into array
+//     const tags = post.tags?.replace(/ /g, "").split(",") || [];
 
-    //  Update post
-    const updatedPost = await databases.updateDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
-      post.postId,
-      {
-        caption: post.caption,
-        imageUrl: image.imageUrl,
-        imageId: image.imageId,
-        location: post.location,
-        tags: tags,
-      }
-    );
+//     //  Update post
+//     const updatedPost = await databases.updateDocument(
+//       appwriteConfig.databaseId,
+//       appwriteConfig.postCollectionId,
+//       post.postId,
+//       {
+//         caption: post.caption,
+//         imageUrl: image.imageUrl,
+//         imageId: image.imageId,
+//         location: post.location,
+//         tags: tags,
+//       }
+//     );
 
-    // Failed to update
-    if (!updatedPost) {
-      // Delete new file that has been recently uploaded
-      if (hasFileToUpdate) {
-        await deleteFile(image.imageId);
-      }
+//     // Failed to update
+//     if (!updatedPost) {
+//       // Delete new file that has been recently uploaded
+//       if (hasFileToUpdate) {
+//         await deleteFile(image.imageId);
+//       }
 
-      // If no new file uploaded, just throw error
-      throw Error;
-    }
+//       // If no new file uploaded, just throw error
+//       throw Error;
+//     }
 
-    // Safely delete old file after successful update
-    if (hasFileToUpdate) {
-      await deleteFile(post.imageId);
-    }
+//     // Safely delete old file after successful update
+//     if (hasFileToUpdate) {
+//       await deleteFile(post.imageId);
+//     }
 
-    return updatedPost;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return updatedPost;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // ============================== DELETE POST
 export async function deletePost(postId?: string, imageId?: string) {
@@ -502,13 +502,13 @@ export async function updateUser(user: IUpdateUser) {
       if (!uploadedFile) throw Error;
 
       // Get new file url
-      const fileUrl = getFilePreview(uploadedFile.$id);
-      if (!fileUrl) {
-        await deleteFile(uploadedFile.$id);
-        throw Error;
-      }
+      // const fileUrl = getFilePreview(uploadedFile.$id);
+      // if (!fileUrl) {
+      //   await deleteFile(uploadedFile.$id);
+      //   throw Error;
+      // }
 
-      image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
+      // image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
     }
 
     //  Update user
