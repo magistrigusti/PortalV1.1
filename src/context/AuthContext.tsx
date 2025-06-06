@@ -64,6 +64,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.getItem('cookieFallback')=== '[]' ||
         localStorage.getItem('cookieFallback') === null
     ) navigate('/sign-in')
+
+    checkAuthUser();
   }, []);
 
   const value = {
@@ -82,4 +84,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export default AuthContext;
+export default AuthProvider;
+
+export const useUserContext = () => useContext(AuthContext);
