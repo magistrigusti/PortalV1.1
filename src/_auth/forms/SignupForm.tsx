@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import  Loader  from "@/components/shared/Loader";
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { SignupValidation } from "@/lib/validation";
-import { createUserAccount } from "@/lib/appwrite/api";
 import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
@@ -58,44 +57,44 @@ const SignupForm = () => {
   const { mutateAsync: signInAccount, isPending: isSigningInUser } = useSignInAccount();
 
   // Handler
-  const handleSignup = async (user: z.infer<typeof SignupValidation>) => {
-    try {
-      const newUser = await createUserAccount(user);
+  // const handleSignup = async (user: z.infer<typeof SignupValidation>) => {
+  //   try {
+  //     const newUser = await createUserAccount(user);
 
-      if (!newUser) {
-        // toast({ title: "Sign up failed. Please try again.", });
+  //     if (!newUser) {
+  //       // toast({ title: "Sign up failed. Please try again.", });
         
-        return;
-      }
+  //       return;
+  //     }
 
-      const session = await signInAccount({
-        email: user.email,
-        password: user.password,
-      });
+  //     const session = await signInAccount({
+  //       email: user.email,
+  //       password: user.password,
+  //     });
 
-      if (!session) {
-        // toast({ title: "Something went wrong. Please login your new account", });
+  //     if (!session) {
+  //       // toast({ title: "Something went wrong. Please login your new account", });
         
-        navigate("/sign-in");
+  //       navigate("/sign-in");
         
-        return;
-      }
+  //       return;
+  //     }
 
-      // const isLoggedIn = await checkAuthUser();
+  //     // const isLoggedIn = await checkAuthUser();
 
-      if (isLoggedIn) {
-        form.reset();
+  //     if (isLoggedIn) {
+  //       form.reset();
 
-        navigate("/");
-      } else {
-        // toast({ title: "Login failed. Please try again.", });
+  //       navigate("/");
+  //     } else {
+  //       // toast({ title: "Login failed. Please try again.", });
         
-        return;
-      }
-    } catch (error) {
-      console.log({ error });
-    }
-  };
+  //       return;
+  //     }
+  //   } catch (error) {
+  //     console.log({ error });
+  //   }
+  // };
 
   return (
     <Form {...form}>
