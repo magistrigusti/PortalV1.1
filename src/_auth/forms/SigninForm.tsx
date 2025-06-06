@@ -2,13 +2,11 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/shared/Loader";
-import { useToast } from "@/hooks/use-toast"
-
+import { useToast } from "@/hooks/use-toast";
 import { SigninValidation } from "@/lib/validation";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
@@ -19,37 +17,62 @@ const SigninForm = () => {
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
   // Query
-  const { mutateAsync: signInAccount, isLoading } = useSignInAccount();
+  const { mutateAsync: signInAccount } = useSignInAccount();
 
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "first@mail.ru",
+      password: "12345678",
     },
   });
 
-  const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    const session = await signInAccount(user);
+  async function onSubmit(values: z.infer<typeof SigninValidation>) {
+
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    });
+
+    console.log({session})
 
     if (!session) {
-      toast({ title: "Login failed. Please try again." });
-      
-      return;
+      return toast({ title: 'login in failed. please try again.'})
     }
 
     const isLoggedIn = await checkAuthUser();
 
+    console.log({isLoggedIn});
+
     if (isLoggedIn) {
       form.reset();
 
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again.", });
-      
-      return;
+      navigate('/')
+      return toast({ title: "login in failed"})
     }
-  };
+  }
+
+  // const handleSigni = async (user: z.infer<typeof SigninValidation>) => {
+  //   const session = await signInAccount(user);
+
+  //   if (!session) {
+  //     toast({ title: "Login failed. Please try again." });
+      
+  //     return;
+  //   }
+
+  //   const isLoggedIn = await checkAuthUser();
+
+  //   if (isLoggedIn) {
+  //     form.reset();
+
+  //     navigate("/");
+  //   } else {
+  //     toast({ title: "Login failed. Please try again.", });
+      
+  //     return;
+  //   }
+  // };
 
   return (
     <Form {...form}>
@@ -63,7 +86,7 @@ const SigninForm = () => {
           Welcome back! Please enter your details.
         </p>
         <form
-          onSubmit={form.handleSubmit(handleSignin)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-5 w-full mt-4">
           <FormField
             control={form.control}
@@ -94,7 +117,7 @@ const SigninForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isLoading || isUserLoading ? (
+            { isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
@@ -116,6 +139,5 @@ const SigninForm = () => {
     </Form>
   );
 };
-
 
 export default SigninForm;

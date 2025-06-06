@@ -60,6 +60,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    if (window.location.pathname === '/sign-up' || window.location.pathname === '/login') {
+    return;
+  }
+
     if (
       localStorage.getItem('cookieFallback')=== '[]' ||
       localStorage.getItem('cookieFallback') === null
