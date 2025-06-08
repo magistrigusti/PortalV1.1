@@ -58,7 +58,7 @@ const LeftSidebar = () => {
             const isActive = pathname === link.route;
 
             return(
-              <li className={`leftsidebar-link ${ isActive && 'bg-primary-500'}`}
+              <li className={`leftsidebar-link group ${ isActive && 'bg-primary-500'}`}
                 key={link.label}
               >
                 <NavLink className="flex gap-4 items-center p-4"
@@ -76,6 +76,13 @@ const LeftSidebar = () => {
           })}
         </ul>
       </div>
+
+      <Button variant="ghost"
+        className="shad-button_shost"
+        onClick={() => signOut()}
+      >
+        <img src="/assets/icons/logout.svg" alt="" />
+      </Button>
     </nav>
   )
 }
