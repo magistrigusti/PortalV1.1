@@ -41,7 +41,7 @@ export async function saveUserToDB(user: {
   accountId: string;
   email: string;
   name: string;
-  imageUrl: URL;
+  imageUrl: string;
   username?: string;
 }) {
   try {
@@ -61,13 +61,15 @@ export async function saveUserToDB(user: {
 // ============================== SIGN IN
 export async function signInAccount(user: { email: string; password: string }) {
   try {
-    const session = await account.createSession(user.email, user.password);
-
+    console.log("LOGIN CALL PARAMS", user); // ← вот эта строка
+    const session = await account.createEmailPasswordSession(user.email, user.password);
+    console.log("SESSION RESULT", session); // ← вот эта строка
     return session;
   } catch (error) {
-    console.log(error);
+    console.log("LOGIN ERROR", error);
   }
 }
+
 
 // ============================== GET ACCOUNT
 export async function getAccount() {

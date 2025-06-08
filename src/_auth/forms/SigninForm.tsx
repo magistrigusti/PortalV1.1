@@ -28,7 +28,7 @@ const SigninForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof SigninValidation>) {
-
+    console.log('we are here')
     const session = await signInAccount({
       email: values.email,
       password: values.password,
