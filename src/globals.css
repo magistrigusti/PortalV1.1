@@ -1,6 +1,4 @@
-:root {
-  --radius: 0.8rem; /* Можно менять размер: 0.5rem = 8px. Хочешь больше скругление — ставь 1rem */
-}
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
@@ -15,6 +13,9 @@
   body {
     @apply bg-dark-1 text-white min-h-screen font-inter;
   }
+  :root {
+  --radius: 0.8rem;
+}
 }
 
 @layer utilities {
