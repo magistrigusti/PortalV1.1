@@ -12,6 +12,7 @@ import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FileUploader from "../shared/FileUploader";
+import { createPost } from "@/lib/appwrite/api";
 
 type PostFormProps = {
   post?: Models.Document;
