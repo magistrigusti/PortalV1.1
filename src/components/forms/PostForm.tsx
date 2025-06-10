@@ -1,24 +1,25 @@
 import * as z from "zod";
 import { Models } from "appwrite";
-import { useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostValidation } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
 import { useUserContext } from "@/context/AuthContext";
-// import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Textarea } from "../ui/textarea";
+import FileUploader from "../shared/FileUploader";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import FileUploader from "../shared/FileUploader";
-import { createPost } from "@/lib/appwrite/api";
+import Loader from "../shared/Loader";
 
 type PostFormProps = {
   post?: Models.Document;
-}
+  action: "Create" | "Update";
+};
 
-const PostForm = ({ post }: PostFormProps) => {
+const PostForm = ({ post, action }: PostFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useUserContext();
@@ -33,44 +34,61 @@ const PostForm = ({ post }: PostFormProps) => {
   });
 
   // Query
-  // const { mutateAsync: createPost, isLoading: isLoadingCreate } =
-  //   useCreatePost();
-  // const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
-  //   useUpdatePost();
+  const { mutateAsync: createPost,   } =
+    useCreatePost();
+  const { mutateAsync: updatePost,  } =
+    useUpdatePost();
 
-  async function onSubmit(values: z.infer<typeof PostValidation>) {
+  // Handler
+  const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
+    // ACTION = UPDATE
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...value,
+        postId: post.$id,
+        imageId: post.imageId,
+        imageUrl: post.imageUrl,
+      });
+
+      if (!updatedPost) {
+        toast({
+          title: `${action} post failed. Please try again.`,
+        });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
+
+    // ACTION = CREATE
     const newPost = await createPost({
-      ...values,
+      ...value,
       userId: user.id,
     });
 
     if (!newPost) {
-      toast({ title: 'Please try again '});
+      toast({
+        title: `${action} post failed. Please try again.`,
+      });
     }
-
     navigate("/");
-  }
+  };
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-9 w-full max-w-5xl"
-        onSubmit={() => (onSubmit)}
-      >
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex flex-col gap-9 w-full  max-w-5xl">
         <FormField
           control={form.control}
           name="caption"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">
-                Caption
-              </FormLabel>
-
+              <FormLabel className="shad-form_label">Caption</FormLabel>
               <FormControl>
-                <Textarea className="shad-textarea custom-scrollbar"
+                <Textarea
+                  className="shad-textarea custom-scrollbar"
                   {...field}
                 />
               </FormControl>
-
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
@@ -81,17 +99,13 @@ const PostForm = ({ post }: PostFormProps) => {
           name="file"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">
-                Add Photos
-              </FormLabel>
-
+              <FormLabel className="shad-form_label">Add Photos</FormLabel>
               <FormControl>
                 <FileUploader
                   fieldChange={field.onChange}
                   mediaUrl={post?.imageUrl}
                 />
               </FormControl>
-
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
@@ -102,14 +116,10 @@ const PostForm = ({ post }: PostFormProps) => {
           name="location"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">
-                Add Location
-              </FormLabel>
-
+              <FormLabel className="shad-form_label">Add Location</FormLabel>
               <FormControl>
                 <Input type="text" className="shad-input" {...field} />
               </FormControl>
-
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
@@ -123,32 +133,37 @@ const PostForm = ({ post }: PostFormProps) => {
               <FormLabel className="shad-form_label">
                 Add Tags (separated by comma " , ")
               </FormLabel>
-
               <FormControl>
-                <Input className="shad-input"
-                  placeholder="allod, hero, game"
+                <Input
+                  placeholder="Art, Expression, Learn"
                   type="text"
+                  className="shad-input"
                   {...field}
                 />
               </FormControl>
-
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
         />
 
         <div className="flex gap-4 items-center justify-end">
-          <Button className="shad-button_dark_4" type="button">
+          <Button
+            type="button"
+            className="shad-button_dark_4"
+            onClick={() => navigate(-1)}>
             Cancel
           </Button>
-
-          <Button className="shad-button_primary whitesspace-nowrap" type="submit">
-            Submit
+          <Button
+            type="submit"
+            className="shad-button_primary whitespace-nowrap"
+            >
+            { <Loader />}
+            {action} Post
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
 export default PostForm;
