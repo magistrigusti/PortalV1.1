@@ -24,21 +24,25 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FileUploader from "../shared/FileUploader";
 
-const form = z.object({
+const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
 });
 
-function handleSubmit () {
-  console.log(handleSubmit)
-}
 
-function onSubmit(values: z.infer<typeof form>) {
+function onSubmit(values: z.infer<typeof formSchema>) {
   console.log(values)
 }
 
-const PostForm = () => {
+const PostForm = ({ post }) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
+
   return (
     <Form {...form}>
       <form className="flex flex-col gap-9 w-full max-w-5xl"
@@ -74,7 +78,10 @@ const PostForm = () => {
               </FormLabel>
 
               <FormControl>
-                <FileUploader />
+                <FileUploader 
+                  fieldChange={field.onChange}
+                  mediaUrl={post?.imageUrl}
+                />
               </FormControl>
 
               <FormMessage className="shad-form_message" />
