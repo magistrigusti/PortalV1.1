@@ -4,7 +4,7 @@ import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostValidation } from "@/lib/validation";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
