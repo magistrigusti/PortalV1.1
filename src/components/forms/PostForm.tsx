@@ -1,18 +1,18 @@
 import * as z from "zod";
 import { Models } from "appwrite";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { FileUploader, Loader } from "../shared";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Textarea } from "../ui/textarea";
-import FileUploader from "../shared/FileUploader";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import Loader from "../shared/Loader";
+
 
 type PostFormProps = {
   post?: Models.Document;
@@ -34,9 +34,9 @@ const PostForm = ({ post, action }: PostFormProps) => {
   });
 
   // Query
-  const { mutateAsync: createPost,   } =
+  const { mutateAsync: createPost, isLoading: isLoadingCreate } =
     useCreatePost();
-  const { mutateAsync: updatePost,  } =
+  const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
     useUpdatePost();
 
   // Handler
@@ -156,8 +156,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
-            >
-            { <Loader />}
+            disabled={isLoadingCreate || isLoadingUpdate}>
+            {(isLoadingCreate || isLoadingUpdate) && <Loader />}
             {action} Post
           </Button>
         </div>
