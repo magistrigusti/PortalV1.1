@@ -4,7 +4,6 @@ import {
   useQueryClient,
   useInfiniteQuery,
 } from "@tanstack/react-query";
-
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 import {
   createUserAccount,
