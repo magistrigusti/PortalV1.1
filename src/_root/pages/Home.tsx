@@ -25,9 +25,7 @@ const Home = () => {
                 <li className="flex justify-center w-full"
                   key={post.$id}
                 >
-                  
-
-                  <PostCard post={post} />
+                  <PostCard post={post} key={post.caption} />
                 </li>
               ))}
             </ul>
