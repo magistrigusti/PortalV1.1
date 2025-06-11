@@ -25,7 +25,7 @@ const Home = () => {
                 <li className="flex justify-center w-full"
                   key={post.$id}
                 >
-                  console.log(post)
+                  
 
                   <PostCard post={post} />
                 </li>

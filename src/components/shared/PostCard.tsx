@@ -13,6 +13,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
 
   if (!post.creator) return;
+  console.log(post)
 
   return (
     <div className="post-card">
@@ -68,7 +69,7 @@ const PostCard = ({ post }: PostCardProps) => {
             ))}
           </ul>
         </div>
-
+            
         <img
           src={post.imageUrl }
           alt="post image"
